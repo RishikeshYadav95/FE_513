@@ -1,0 +1,564 @@
+---
+title: "Lecture_2_Code_Example"
+author: "Cheng"
+output: pdf_document
+---
+
+# Lecture 2 R Session II
+Content: 
+1. object types: vector, matrix\*, array\*, factor, data frame, list
+2. operators\*
+3. functions: bult-in\*, user-defined
+4. packages
+
+# 1. Object types(array, data frame, list)
+
+## 1.1 vector
+
+Create vector
+
+```{r}
+v1 <- c(1, 2, 3)
+v2 <- 1:10
+v3 <- seq(1, 10, by = 2)
+v.combind <- c(v1, v2)
+print(v.combind)
+```
+
+Access element in vector
+
+```{r}
+# Accessing vector elements using position.
+week.day <- c("Sun","Mon","Tue","Wed","Thurs","Fri","Sat")
+week.day.subset <- week.day[c(2, 3, 6)]
+print(week.day.subset)
+
+# Accessing vector elements using logical indexing.
+week.day.subset <- week.day[c(TRUE, FALSE, FALSE, FALSE, FALSE, TRUE, FALSE)]
+print(week.day.subset)
+
+# Accessing vector elements using 0/1 indexing.
+week.day.subset <- week.day[c(0, 0, 0, 0, 0, 0, 1)]
+print(week.day.subset)
+
+# Accessing vector elements using negative indexing.
+week.day.subset <- week.day[c(-1)]
+print(week.day.subset)
+
+# Replace an element in a vector 
+week.day.subset[1] <- 1
+print(week.day.subset)
+
+# Add elements to vector
+week.day.subset <- append(week.day.subset, 6)
+print(week.day.subset)
+```
+
+Calculation of vector (element-wise)
+
+Be careful of the vector lenght.
+
+```{r}
+# Create two vectors
+v1 <- c(1, 2, 3, 4, 5)
+v2 <- c(5:1)
+
+# Vector addition
+add.result <- v1 + v2
+print(add.result)
+
+# Vector subtraction
+sub.result <- v1 - v2
+print(sub.result)
+
+# Vector multiplication
+multi.result <- v1 * v2
+print(multi.result)
+
+# Vector division.
+divi.result <- v1 / v2
+print(divi.result)
+
+# How about inner product?
+#inner.product <- 
+#print(inner.product)
+```
+
+## 1.2* Matrix
+
+Create matrix
+
+```{r}
+# Elements are arranged sequentially by row.
+M <- matrix(c(1:9), nrow = 3, byrow = TRUE)
+print(M)
+
+# Define the column and row names.
+rownames = c("row1", "row2", "row3")
+colnames = c("col1", "col2", "col3")
+
+P <- matrix(c(1:9), nrow = 3, byrow = TRUE, dimnames = list(rownames, colnames))
+print(P)
+```
+
+Access elements in matrix
+
+```{r}
+# Access the element at 2nd column and 1st row.
+print(P[1,2])
+
+# Access part of the matrix
+print(P[1:2, 1:2])
+
+# Access only the  2nd row.
+print(P[2,])
+```
+
+Matrix calculation 
+
+```{r}
+# Create two 2x3 matrices.
+matrix1 <- matrix(c(1: 4), nrow = 2)
+print(matrix1)
+
+matrix2 <- matrix(c(4: 1), nrow = 2)
+print(matrix2)
+
+# Add the matrices.
+result <- matrix1 + matrix2
+print(result)
+
+# Subtract the matrices
+result <- matrix1 - matrix2
+print(result)
+
+# Multiply the matrices.
+result <- matrix1 * matrix2
+print(result)
+
+# Divide the matrices
+result <- matrix1 / matrix2
+print(result)
+
+# Inner product
+result <- matrix1 %*% matrix2
+print(result)
+```
+
+## 1.3* array: 
+
+array is a vector with one or more dimensions
+
+```{r array}
+# create an array
+a1 <- array(data = c(1,2,3), dim = c(3), dimnames = NULL)# Create an one dimension array
+a1 <- array(1,2,3) # wrong! take vector or list as input
+
+# high dimensional array
+a2 <- array(data=0,dim = c(2,3))# create a 2*3 matrix. two dimension array is almost the same as a matrix
+a3 <- array(0, c(2,3)) # simplified syntax
+a4 <- array(dim=c(3,3)) # create an empty matrix
+
+# practice after class
+vector1 <- c(1,2,3)
+vector2 <- c(4,5,6,7,8,9)
+a3 <- array(data = c(vector1, vector2),dim = c(3,3)) # add two vectors into an array. pay attention to the order of numbers
+print (a3)
+a3 <- array(c(vector1, vector2),dim = c(3,3,4)) # add two vectors into an array. pay attention to the order of numbers
+print (a3)
+```
+
+array cannot contain different data types
+
+```{r}
+a <- 2
+b <- "world"
+a2 <- array(c(a,b))# all non-character elements would be transferred to character
+c <- T
+a2 <- array(c(a,c))# logical elements would be tranferred to number
+```
+
+elements in array(indexing)
+
+```{r}
+print(a3[1,3,2])# print the element in first row and third column of the second matrix
+print(a3[1,,2])# print the first row of the second matrix
+
+# replace elements in array
+a4[,2:3] = vector2
+a4
+```
+
+name columns and rows
+
+```{r}
+# by initialization
+colName = c("c1","c2","c3") 
+rowName = c("r1","r2","r3")
+a4 = array(c(vector1, vector2), dim = c(3,3,1), dimnames = list(rowName,colName))
+
+# reset name
+colName = c("c01","c02","c03")
+rowName = c("r01", "r02", "r03")
+rownames(a4) = rowName# Retrieve or set the row names of a matrix-like object.
+colnames(a4) = colName
+
+a4["r01","c02"]
+```
+
+## 1.4 factor: 
+
+Factor is used to categorize the data and store it as levels.
+They can store both strings and integers.
+they are useful in the columns which have a limited number of unique values. 
+Like "Male, "Female" and True, False
+
+```{r factor}
+# encode vector as factor
+data <- c("East","West","East","North","South","North","East","West","West","West","East","North")
+print(data)
+print(is.factor(data))
+
+# Apply the factor function.
+factor_data <- factor(data)
+print(is.factor(factor_data))
+print(factor_data)
+
+# Change element values
+factor_data <- factor(data, labels = c(1, 2, 3, 4))
+print(factor_data)
+```
+
+Easy to store and compare
+
+```{r}
+# store as integer
+month.vec <- c("March","April","January","November","January", "September","October","September","November","August",
+          "January","November","November","February","May","August",
+           "July","December","August","August","September","November",
+           "February","April")
+month.factor <- factor(month.vec)
+table(month.factor)
+
+# easy to compare strings
+month.order = c("January","February","March",
+               "April","May","June","July","August","September",
+               "October","November","December")
+month.factor.ordered <- factor(month.vec, levels = month.order, order = T)
+month.factor.ordered[2] > month.factor.ordered[1]
+print(month.factor.ordered)
+```
+
+## 1.5 dataframe:
+
+A data frame is a table or a two-dimensional array-like structure in which each 
+column contains values of one variable and each row contains one set of values 
+from each column. Each column holds the same data type but not necessary among 
+columns.It's a fundamental data structure by most of R's Packages.
+
+```{r dataframe}
+a <- c(1,2,3) # one observation can be regarded as one column
+b <- c("beta","gamma","alpha")
+df1 <- data.frame(a,b) # create a data frame
+print(df1)
+
+# second method (initialize with column name)
+a <- c("Tom","Bob","Amy")# name columns
+b <- c(20,53,12)
+df2 <- data.frame(Name = a, Age = b)
+print(df2)
+```
+
+access data frame element
+
+```{r}
+# first method([ ])
+df2[2, 2] # get the second column
+df2[2, 'Age']
+df2['Age'][2,] # return data.frame
+#print(class(df2['Name'])) # class(): type of object
+#print(class(df2[,'Name']))
+
+# second method( $ )
+df2$Age# access one observation by name
+df2$Name[-2] # get all the elements except the second one
+```
+
+Expand Data Frame:
+add row and column to existing data frame
+
+```{r}
+# first method(rbind, cbind)
+df2 <- cbind(df2, Male=c(T,T,F)) # Add a new column
+print(df2)
+
+df2 <- rbind(df2, data.frame(Name="Tom" ,Age=34, Male=T)) # Add a new row using vector
+print(df2)
+
+# second method(assiging values)
+df2['col3'] <- c(1,2,3,4)
+print(df2)
+
+df2$new.col <- c(10, 20, 5, 2)
+print(df2)
+```
+
+## 1.6 list 
+List can hold items of different data types
+
+```{r list}
+# create a simple list
+list1 <- list(df1, df2, a3)
+list1
+
+# named list
+list2 = list(x = c(1, 2, 3), y = c(1, 4, 9))
+list2
+```
+
+elements in list
+
+```{r}
+# [] vs [[]]
+list2[1]
+list2[[1]]
+class(list2[1])# sublist of a list is also a list. Attention: won't get number 3
+class(list2[[1]]) # access values of a list
+list2[1][1] # return type = num
+list2[[1]][1]
+```
+
+an good example: banking system *
+
+```{r}
+bankName = c("BOA", "Chase", "JPMorgan") 
+bankEquity = c(210,230,304)
+bankLinks = matrix(c(1,1,1,0,1,1,0,0,1), nrow = 3) 
+bankLinks
+bankInfo = list(bankName, bankEquity, bankLinks)  # add elements in list.
+names(bankInfo) = c("Names", "Equities", "Links") # give names to the elements in a list
+print(bankInfo$Names) # display with name. equals to print (x[1])
+```
+
+#2*. Operations
+
+## 2.1* arithmetic operators(+-*/)
+
+```{r operations}
+# number case
+num1 = 3 # operations of two data
+num2 = 4
+num1 + num2  # 
+num2 %% num1 # modulo operation
+# modulo division: (5 mod 2) =1, because 5/2 has a quotient of 2 and a remainder of 1
+
+# vector case
+v1 = c(1,2,3,4) # operators in a vector
+v1 + 5 # every element in vector plus 5
+v2 = c(2,2,2,2) # operations of two vectors
+v1 + v2
+
+# matrix case
+mat1 = matrix(c(v1,v2), nrow = 2, byrow = FALSE)
+mat2 = matrix(c(v1,v2), nrow = 2, byrow = TRUE)
+mat1 * mat2
+mat1 %*% t(mat2)
+```
+
+## 2.2* comparison operators(<, <= >= == !=)
+
+```{r}
+num1 < num2
+num1 == num2 # attention: "a==b" is different from "a=b"
+num1 != num2 # num1 NOT equal to num2
+
+v = c(2, 5.5, 6, 9)
+t = c(8, 2.5, 14, 9)
+print(v > t)
+```
+
+## 2.3* logical operators(! & |)
+
+```{r}
+a = 3
+a<5 & a>1
+a<5 && a>1 # & and && indicat logical and
+1<a<5 # wrong. it's necessary to use & 
+a<5 & a<1
+a<5 | a<1
+a<5 || a<1 # | and || indicate logical or
+
+3 & 4# attention: different from 3+4
+```
+
+# 3. Functions
+
+## 3.1* built-in functions for numbers
+
+```{r functions}
+a <- 4 
+sqrt(a) # square root
+exp(a) # exoponential 
+log(a) # logarithm
+```
+
+## 3.2* built-in functions for vectors
+
+```{r}
+c <- c(1,2,3,4,5)
+r <- rnorm(100)
+r
+
+sqrt(c) # square root
+log(c) # logrithm
+min(c) # minimum number in a vector
+min(c,d)
+max(c) # maximum number
+var(c) # variance
+sd(c) # standard deviation
+median(c) #median number
+mean(c)
+hist(r)
+quantile(r)
+
+summary(r) # descripe the data set using statistics
+sort(c) # sort a vector/array
+sort(c, decreasing = TRUE)
+order(c)# order number of elements in a vector/array
+union(x, y)
+intersect(x, y)
+setdiff(x, y)
+setequal(x, y) # common elements in different vectors
+```
+
+## 3.3* built-in functions for matrix
+
+```{r}
+diag(m)# diagonal of a matrix
+
+# Find the solution for Ab, where A=matrix(c(2,0,1,3), ncol=2), b=c(7,4).
+A <- matrix(c(2,0,1,3), ncol=2)
+b <- c(7,4)
+b%*%A # Multiplies two matrices
+
+# find the solution for AB, where B=matrix(c(5,2,4,-1), ncol=2)
+B <- matrix(c(5,2,4,-1), ncol=2)
+A%*%B
+
+# Find the inverse matrix of A.
+solve(A) 
+
+# Find the value of x on Ax=b. (A^(-1) * b)
+solve(A, b)# solves the equation A %*% x = b for x
+
+# Using the function eigen find the eigenvalue for A.
+# lamda * v = v * A
+eigen(A)
+
+# Find the eigenvalues and eigenvectors of A'A . Hint: Use crossprod to compute A'A .
+eigen(crossprod(A))
+
+t(A) %*% A == crossprod(A)
+```
+
+## 3.4 user-defined function
+
+```{r}
+# function without argument
+
+myfunc1 <- function(){
+  a <- c(1,2,3)
+  a.square.root <- sqrt(a)
+  return(a.square.root)
+}
+
+result <- myfunc1()
+print(result)
+myfunc1(c(1,2))# error: unused argument
+```
+
+
+```{r}
+# function with arguments
+myfunc2 <- function(arg1, arg2){
+  a <- arg1 * arg2
+  return(a)
+}
+c <- 3
+result <- myfunc2(c,c) # call the new function
+print(result)
+myfunc2(c)# Error in myfunc2() : argument "arg1" is missing, with no default
+```
+
+
+```{r}
+# function with default arguments
+get.circle.area <- function(radius = 1, pi = 3.14){ 
+  a <- pi * radius ^ 2
+  return(a)
+}
+
+get.circle.area(radius=6)
+get.circle.area(3, 3)
+get.circle.area()
+get.circle.area(5)# first argument is replaced by 5
+
+```
+
+3.4* other built-in functions(apply family)
+
+apply(x,margin,function): Returns a vector or array or list of values obtained by applying a function to margins of an array or matrix. Margin is the name of the dataset used. 1 indicates rows, 2 indicates columns, 3 indicates matrix
+
+```{r}
+# create an example
+M <- matrix(c(1:9), byrow = T, nrow = 3)
+print(M)
+
+# apply
+result <- apply(X = M, MARGIN = 1, FUN = sum) # get sum of elements for matrix 
+print(result)
+```
+
+'lapply' works with list (takes list as input and return a list)
+
+```{r}
+# take matrix as input return list
+lapply(M, sum)
+
+# takes list as input and return a list
+x <- list(a = 1:10, beta = exp(-3:3), logic = c(TRUE,FALSE,FALSE,TRUE))
+print(x)
+lapply(x, mean)
+```
+
+'sapply' is a simple version (wrapper) of 'lapply' (work with list and return vector)
+
+```{r}
+# takes list as input and return a vector
+sapply(x, mean)
+
+# take matrix as input return list
+sapply(M, sum)
+```
+
+# 4. Packages
+
+```{r packages}
+# 1. install a new package
+install.packages(quantmod) # package 'quantmod' successfully unpacked and MD5 sums checked
+
+# 2. load library
+library("quantmod") 
+
+# 3. call functions
+Cl(AAPL)
+getSymbols('AAPL')
+
+quantmod::getSymbols()
+A::getSymbols()
+
+# 4. package management
+library() # check list of all the packages installed
+search() # get all packages currently loaded in the R environment
+```
+
